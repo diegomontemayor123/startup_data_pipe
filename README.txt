@@ -1,4 +1,4 @@
-Momentum Tracker
+Startup Momentum Tracker
 
 Polls HN job posts + ingests signed funding events →
 builds Snowflake models via model(), scd_lite(), custview() → serves unified company profiles via API.
