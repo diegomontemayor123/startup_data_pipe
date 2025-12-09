@@ -1,0 +1,46 @@
+                   Startup Momentum Tracker
+                ┌────────────────────────────┐
+                │     Hacker News API        │
+                │  jobstories + item/{id}    │
+                └─────────────┬──────────────┘
+                              │  poll_hn()
+                              ▼
+                      ┌────────────────┐
+                      │ ingestion.py   │
+                      │  (HN Poller)   │
+                      └──────┬─────────┘
+                             │ writes
+                             ▼
+          ┌──────────────────────────────┐
+          │    RAW.HN_JOBS_STAGE         │
+          │    RAW.HN_JOBS_RAW           │
+          └──────────────────────────────┘
+
+Webhook Sender
+(fund.py) ──────POST /funding──────────────▶ ingestion.py (FastAPI)
+                     HMAC verified
+                        writes
+                          ▼
+                  RAW.FUNDING_EVENTS_RAW
+
+───────────────────────────────────────────────────────────────────
+
+                 model.py (ETL / Modelling)
+
+RAW.HN_JOBS_RAW ────────────────┐
+RAW.FUNDING_EVENTS_RAW ─────────┼──▶ STAGING / CORE tables
+                                │
+                                ▼
+                   CORE.COMPANY
+                   CORE.COMPANY_SCD_LITE
+                   CUSTOMER.COMPANY_PROFILE
+        (built via model(), scd_lite(), custview())
+───────────────────────────────────────────────────────────────────
+
+                 server.py (public API)
+
+GET /company_profile ───── queries ────▶ CUSTOMER.COMPANY_PROFILE  
+POST /webhook/fund (alternate path) ───▶ RAW.FUNDING_EVENTS
+
+Client apps consume this API
+(listening on port 8001)

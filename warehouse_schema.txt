@@ -1,0 +1,37 @@
+mini_crust_db
+├─ RAW
+│  ├─ HN_JOBS_RAW(ingest_ts TIMESTAMP, data VARIANT)
+│  ├─ FUNDING_EVENTS_RAW(ingest_ts TIMESTAMP, payload VARIANT)
+│  └─ HN_JOBS_STAGE (stage for JSON files)
+├─ STAGING
+│  └─ HN_JOBS_FLAT(
+│       id STRING,
+│       title STRING,
+│       company_name STRING,
+│       created_ts TIMESTAMP,
+│       ingest_ts TIMESTAMP
+│     )
+├─ CORE
+│  ├─ COMPANY(
+│       id STRING,
+│       name STRING,
+│       first_seen TIMESTAMP,
+│       last_seen TIMESTAMP
+│     )
+│  └─ COMPANY_SCD_LITE(
+│       id STRING,
+│       name STRING,
+│       hash STRING,
+│       valid_from TIMESTAMP,
+│       valid_to TIMESTAMP,
+│       is_current BOOLEAN
+│     )
+└─ CUSTOMER
+   └─ COMPANY_PROFILE(
+        normalized_name STRING,
+        hn_job_count NUMBER,
+        funding_events NUMBER,
+        max_amt NUMBER,
+        last_round STRING,
+        version TIMESTAMP
+      )
